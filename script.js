@@ -32,7 +32,7 @@ function Gameboard() {
   };
 
   // Draw the cell to the given token
-  const drawMove = (row, column, token) => {
+  const makeMove = (row, column, token) => {
     // If the cell is already filled, this is an invalid move, return
     const targetCell = board[row][column];
     if (targetCell.getValue()) {
@@ -46,5 +46,49 @@ function Gameboard() {
   const getBoard = () => board;
 
   // Provide the interface to interact with the board
-  return { printBoard, drawMove, getBoard }
+  return { printBoard, makeMove, getBoard }
 }
+
+function GameController() {
+  playerOneName = "Player One";
+  playerTwoName = "Player Two";
+  const board = Gameboard();
+
+  const players = [
+    {
+      name: 'Player One',
+      token: 'x',
+    },
+    {
+      name: 'Player Two',
+      token: 'o',
+    }
+  ];
+  
+  let activePlayer = players[0];
+
+  const switchActivePlayer = () => {
+    activePlayer = activePlayer === players[0] ? players[1] : players[0];
+  };
+
+  const printNewRound = () => {
+    board.printBoard();
+    console.log(`${activePlayer.name}'s turn!`);
+  };
+
+  const playRound = (row, column) => {
+    board.makeMove(row, column, activePlayer.token);
+    /* 
+      Check for winner
+    */
+
+    switchActivePlayer();
+    printNewRound();
+  };
+
+  printNewRound();
+
+  return { playRound };
+}
+
+const game = GameController();
