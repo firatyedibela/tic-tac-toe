@@ -25,6 +25,9 @@ function Gameboard() {
     }
   }
 
+  // Return board with values
+  const getBoardWithValues = () => board.map((row) => row.map((cell) => cell.getValue()));
+
   // Print the board with the cell's values to the console
   const printBoard = () => {
     const boardWithValues = board.map((row) => row.map((cell) => cell.getValue()));
@@ -46,7 +49,7 @@ function Gameboard() {
   const getBoard = () => board;
 
   // Provide the interface to interact with the board
-  return { printBoard, makeMove, getBoard }
+  return { printBoard, makeMove, getBoard, getBoardWithValues }
 }
 
 function GameController() {
@@ -64,6 +67,45 @@ function GameController() {
       token: 'o',
     }
   ];
+
+  const checkForWinner = () => {
+    const boardWithMoves = board.getBoardWithValues();
+
+    // Check rows
+    for (let i = 0; i < 3; i++) {
+      if (boardWithMoves[i][0] === activePlayer.token &&
+          boardWithMoves[i][1] === activePlayer.token &&
+          boardWithMoves[i][2] === activePlayer.token
+        ) {
+        return true;
+      }
+    }
+
+    // Check columns
+    for (let i = 0; i < 3; i++) {
+      if (boardWithMoves[0][i] === activePlayer.token &&
+          boardWithMoves[1][i] === activePlayer.token &&
+          boardWithMoves[2][i] === activePlayer.token
+        ) {   
+        return true;
+      }
+    }
+
+    // Check diagonals
+    if (
+      (
+        boardWithMoves[0][0] === activePlayer.token &&
+        boardWithMoves[1][1] === activePlayer.token &&
+        boardWithMoves[2][2] === activePlayer.token
+      ) || (
+        boardWithMoves[0][2] === activePlayer.token &&
+        boardWithMoves[1][1] === activePlayer.token &&
+        boardWithMoves[2][0] === activePlayer.token
+      )
+    ) { 
+      return true;
+    }
+  }
   
   let activePlayer = players[0];
 
@@ -78,11 +120,14 @@ function GameController() {
 
   const playRound = (row, column) => {
     board.makeMove(row, column, activePlayer.token);
-    /* 
-      Check for winner
-    */
+    
+    if(checkForWinner()) {
+      console.log(`${activePlayer.name} has won the game!`);
+      board.printBoard();
+      return;
+    }
 
-    switchActivePlayer();
+    //switchActivePlayer();
     printNewRound();
   };
 
