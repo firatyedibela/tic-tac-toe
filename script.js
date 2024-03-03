@@ -1,14 +1,14 @@
 function Cell() {
   let value = null;
 
-  // To reach the cell's value
+  // Reach the cell's value
   const getValue = () => value;
 
-  // To change the cell's value
+  // Change the cell's value
   const addToken = (token) => {
     value = token;
   }
-
+  
   return { getValue, addToken };
 }
 
@@ -53,20 +53,22 @@ function Gameboard() {
 }
 
 function GameController() {
-  playerOneName = "Player One";
-  playerTwoName = "Player Two";
+  playerOneName = "Player 1";
+  playerTwoName = "Player 2";
   const board = Gameboard();
 
   const players = [
     {
-      name: 'Player One',
+      name: playerOneName,
       token: 'x',
     },
     {
-      name: 'Player Two',
+      name: playerTwoName,
       token: 'o',
     }
   ];
+
+  let activePlayer = players[0];
 
   const checkForWinner = () => {
     const boardWithMoves = board.getBoardWithValues();
@@ -77,7 +79,7 @@ function GameController() {
           boardWithMoves[i][1] === activePlayer.token &&
           boardWithMoves[i][2] === activePlayer.token
         ) {
-        return true;
+        return 'winner';
       }
     }
 
@@ -87,7 +89,7 @@ function GameController() {
           boardWithMoves[1][i] === activePlayer.token &&
           boardWithMoves[2][i] === activePlayer.token
         ) {   
-        return true;
+        return 'winner';
       }
     }
 
@@ -103,12 +105,21 @@ function GameController() {
         boardWithMoves[2][0] === activePlayer.token
       )
     ) { 
-      return true;
+      return 'winner';
     }
+
+    // Convert 2d array into 1d to iterate with 1 loop
+    const allCells = boardWithMoves.flat();
+    // If a cell is null, can't be a tie
+    for (let i = 0; i < allCells.length; i++) {
+      if (allCells[i] === null) {
+        return;
+      }
+    }
+
+    return 'tie';
   }
   
-  let activePlayer = players[0];
-
   const switchActivePlayer = () => {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
   };
@@ -121,13 +132,18 @@ function GameController() {
   const playRound = (row, column) => {
     board.makeMove(row, column, activePlayer.token);
     
-    if(checkForWinner()) {
+    if(checkForWinner() === 'winner') {
       console.log(`${activePlayer.name} has won the game!`);
+      board.printBoard();
+      return;
+    } 
+    else if (checkForWinner() === 'tie') {
+      console.log('Tie! Nobody wins.')
       board.printBoard();
       return;
     }
 
-    //switchActivePlayer();
+    switchActivePlayer();
     printNewRound();
   };
 
