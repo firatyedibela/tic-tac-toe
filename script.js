@@ -56,18 +56,19 @@ function Gameboard() {
 }
 
 function GameController() {
-  playerOneName = "Player 1";
-  playerTwoName = "Player 2";
   const board = Gameboard();
+  let result = null;
+
+  const getResult = () => result;
 
   const players = [
     {
-      name: playerOneName,
-      token: 'x',
+      name: "Player 1",
+      token: 'X',
     },
     {
-      name: playerTwoName,
-      token: 'o',
+      name: "Plyar 2",
+      token: 'O',
     }
   ];
 
@@ -140,20 +141,17 @@ function GameController() {
     if(checkForWinner() === 'winner') {
       console.log(`${activePlayer.name} has won the game!`);
       board.printBoard();
+
+      result = 'winner';
       return;
     } 
     else if (checkForWinner() === 'tie') {
       console.log('Tie! Nobody wins.')
       board.printBoard();
+
+      result = 'tie';
       return;
     }
-
-    // const b = board.getBoard();
-    //b.forEach(r => {
-    //   r.forEach(c => {
-    //     console.log(c.getValue());
-    //   })
-    // })
 
     switchActivePlayer();
     printNewRound();
@@ -161,14 +159,35 @@ function GameController() {
 
   printNewRound();
 
-  return { playRound, getActivePlayer, getBoard: board.getBoard};
+  return { 
+    playRound,
+    getActivePlayer, 
+    getBoard: board.getBoard, 
+    getResult,
+  };
 }
 
 
 function Display() {
-  const game = GameController();
+  let game = GameController();
   const divTurn = document.querySelector('.turn');
   const divBoard = document.querySelector('.board');
+
+  const playRoundHandler = function(event) {
+    game.playRound(event.target.dataset.row, event.target.dataset.col);
+    renderGameScreen();
+    if (game.getResult()) {
+      renderGameOverScreen(game.getResult());
+      resetEventListeners();
+    }   
+  }
+
+  const resetEventListeners = () => {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+      cell.removeEventListener('click', playRoundHandler);
+    });
+  }
 
   const renderGameScreen = function() {
     // Clear the board first
@@ -200,20 +219,41 @@ function Display() {
       });
     });
 
-
     // Add event handlers
     const cells = document.querySelectorAll('.cell');
     cells.forEach(cell => {
-      cell.addEventListener('click', () => {
-        game.playRound(cell.dataset.row, cell.dataset.col);
-
-        renderGameScreen();
-      });
+      cell.addEventListener('click', playRoundHandler);
     });
+  }
+
+  const renderGameOverScreen = function(result) {
+    const gameScreen = document.querySelector('.container');
+    const gameOverScreen = document.querySelector('.game-over-modal');
+    gameScreen.classList.add('translucent');
+    gameOverScreen.classList.remove('hidden');
+
+    const winnerText = document.querySelector('.winner');
+    if (result === 'winner') {
+      winnerText.textContent = `${game.getActivePlayer().name} has won the game!`;
+    } else {
+      winnerText.textContent = 'Tie!';
+    }
+
+    const playAgainBtn = document.querySelector('.play-again-btn');
+
+    playAgainBtn.addEventListener('click', () => {
+      gameOverScreen.classList.add('hidden');
+      gameScreen.classList.remove('translucent');
+
+      // Initialize new game
+      Display();
+    });
+
   }
   
   // Initial render
   renderGameScreen();
 }
 
+// Initialize game
 Display();
