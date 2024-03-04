@@ -46,7 +46,10 @@ function Gameboard() {
   }
 
   // Return the entire board for the UI to render
-  const getBoard = () => board;
+  const getBoard = () => {
+    return board;
+  };
+  
 
   // Provide the interface to interact with the board
   return { printBoard, makeMove, getBoard, getBoardWithValues }
@@ -69,6 +72,12 @@ function GameController() {
   ];
 
   let activePlayer = players[0];
+
+  const getActivePlayer = () => activePlayer;
+  
+  const switchActivePlayer = () => {
+    activePlayer = activePlayer === players[0] ? players[1] : players[0];
+  };
 
   const checkForWinner = () => {
     const boardWithMoves = board.getBoardWithValues();
@@ -119,10 +128,6 @@ function GameController() {
 
     return 'tie';
   }
-  
-  const switchActivePlayer = () => {
-    activePlayer = activePlayer === players[0] ? players[1] : players[0];
-  };
 
   const printNewRound = () => {
     board.printBoard();
@@ -143,13 +148,72 @@ function GameController() {
       return;
     }
 
+    // const b = board.getBoard();
+    //b.forEach(r => {
+    //   r.forEach(c => {
+    //     console.log(c.getValue());
+    //   })
+    // })
+
     switchActivePlayer();
     printNewRound();
   };
 
   printNewRound();
 
-  return { playRound };
+  return { playRound, getActivePlayer, getBoard: board.getBoard};
 }
 
-const game = GameController();
+
+function Display() {
+  const game = GameController();
+  const divTurn = document.querySelector('.turn');
+  const divBoard = document.querySelector('.board');
+
+  const renderGameScreen = function() {
+    // Clear the board first
+    divBoard.textContent = "";
+
+    // Get the latest active player and board status
+    const activePlayer = game.getActivePlayer();
+    const board = game.getBoard();
+    console.log(board.map(row => row.map(cell => cell.getValue())));
+    
+
+    // Display player turn
+    divTurn.textContent = `${activePlayer.name}'s turn`;
+
+    // Display board
+    // Add cells to divBoard based on board
+    board.forEach((row, rowIdx) => {
+      row.forEach((cell, colIdx) => {
+        const cellBtn = document.createElement('button');
+        // We'll need cell's coordinates for event handlers
+        cellBtn.dataset.row = rowIdx;
+        cellBtn.dataset.col = colIdx;
+        // Add class to target in css
+        cellBtn.classList.add('cell');
+      
+        cellBtn.textContent = cell.getValue();
+
+        divBoard.appendChild(cellBtn);
+      });
+    });
+
+
+    // Add event handlers
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+      cell.addEventListener('click', () => {
+        game.playRound(cell.dataset.row, cell.dataset.col);
+
+        renderGameScreen();
+      });
+    });
+  }
+  
+  // Initial render
+  renderGameScreen();
+}
+
+Display();
