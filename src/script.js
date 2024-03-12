@@ -19,9 +19,8 @@ function Gameboard() {
   }
 
   const addMove = function(row, column, token) {
-    // 0 is for fail, 1 is for success
+    // 0 is for fail(invalid move), 1 is for success
     if (board[row][column].getValue()) {
-      console.log('###INVALID MOVE###');
       return 0;
     }
     board[row][column].changeValue(token);
@@ -48,7 +47,6 @@ function Game() {
 
   const checkForWinner = () => {
     const boardWithValues = board.getBoardWithValues();
-
     // Win conditions
     // Check rows
     for (let i = 0; i < 3; i++) {
@@ -59,7 +57,6 @@ function Game() {
         return true;
       }
     }
-
     // Check columns
     for (let i = 0; i < 3; i++) {
       if (boardWithValues[0][i] === activePlayer.token &&
@@ -69,7 +66,6 @@ function Game() {
         return true;
       }
     }
-
     // Check diagonals
     if (
       (
@@ -84,10 +80,7 @@ function Game() {
     ) { 
       return true;
     }
-
   }
-  
-  const announceWinner = () => console.log(`${activePlayer.name} has won the game!`);
 
   const checkForTie = () => {
     // If any of the cell values are false, a.k.a. null, a.k.a. empty, can't be a tie.
@@ -104,11 +97,8 @@ function Game() {
   const playRound = function(row, column) {
     // If move wasn't done successfully, return
     if (!board.addMove(row, column, activePlayer.token)) {
-      console.log(`${activePlayer.name}'s turn!`);
       return;
     }
-
-    console.log(board.getBoardWithValues());
 
     // Check for winner and tie after each move
     if (checkForWinner()) {
@@ -121,7 +111,6 @@ function Game() {
     }
     else {
       changeTurn();
-      console.log(`${activePlayer.name}'s turn!`);
     }    
   }
 
@@ -137,7 +126,7 @@ function Game() {
 function ScreenController() {
   const game = Game();
 
-  // Get turn and board
+  // Get turn and board from DOM
   const board = document.querySelector('.board');
   const turn = document.querySelector('.turn');
 
