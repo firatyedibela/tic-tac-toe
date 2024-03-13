@@ -8,14 +8,24 @@
   <script type="module" src="./src/script.js" defer></script> 
 </head>
 <body>
-  <div class="container">
-    <h1>Tic-Tac-Toe</h1>
-    <div class="board"></div>
-    <div class="turn"></div>
+  <h1>Tic-Tac-Toe</h1>
+  <div class="ui-container">
+    <form action="">
+      <div>
+        <label for="player1">Player 1's Name:</label>
+        <input type="text" id="player1">
+      </div>
+      <div>
+        <label for="player2">Player 2's Name:</label>
+        <input type="text" id="player2">
+      </div>
+      <div>
+        <button class="start-game">Start</button>
+      </div>
+      
+    </form>
   </div>
   <div class="game-over-modal hidden">
-    <div class="game-over"></div>
-    <button class="play-again-btn">Play Again</button>
   </div>
   
 </body>

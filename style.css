@@ -1,3 +1,7 @@
+* {
+  font-family: 'Times New Roman', Times, serif;
+}
+
 body {
   position: relative;
   margin: 0;
@@ -10,35 +14,96 @@ body {
   rgba(0, 0, 0, 0) linear-gradient(315deg, rgb(189, 5, 245) 100%, rgba(9, 245, 5, 0) 70%) repeat scroll 0% 0%;
 }
 
-.container {
+h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 6rem;
+  width: 100%;
+  height: 100px;
+  color: rgb(255, 255, 255);
+}
+
+.ui-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: start;
 }
 
-.translucent {
+form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  border: 5px solid white;
+  border-radius: 10px;
+  padding: 40px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+form > div {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+form label {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: rgb(9, 17, 39);
+}
+
+form input {
+  height: 2.2rem;
+  width: 260px;
+  border: none;
+  border-radius: 15px;
+  padding-left: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  outline: none;
+  transition: box-shadow 0.15s;
+}
+
+form input:focus {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}
+
+form input:hover {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}
+
+form button {
+  font-size: 1.5rem;
+  margin-top: 18px;
+  border: none;
+  cursor: pointer;
+  background-color: rgb(231, 230, 230);
+  padding: 10px 40px;
+  border-radius: 200px;
+  font-weight: bold;
+  transition: box-shadow 0.15s;
+}
+
+form button:hover {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}
+
+.faded {
   opacity: 0.2;
 }
 
-h1 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 4rem;
-  width: 100%;
-  height: 100px;
-  color: rgb(255, 255, 255);
-}
-
-.board {
+.gameBoard {
   display: grid;
   grid-template-columns: repeat(3, 170px);
   grid-template-rows: repeat(3, 170px);
   border: 1px solid rgb(7, 7, 133);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
-.turn {
+.playTurn {
   margin-top: 25px;
   font-weight: bold;
   font-size: 2rem;
@@ -51,6 +116,15 @@ h1 {
   font-size: 8rem;
   font-weight: bold;
   border: 2px solid rgb(7, 7, 133);
+  transition: background 0.15s;
+}
+
+.cell:active {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}
+
+.cell:hover {
+  background-color: rgb(0, 226, 211);
 }
 
 .game-over-modal {
@@ -71,7 +145,6 @@ h1 {
   align-items: center;
   justify-content: center;
   
-  font-family: arial;
   font-size: 2.5rem;
   font-weight: bold;
   color: rgb(231, 231, 231);
@@ -82,12 +155,17 @@ h1 {
 }
 
 .play-again-btn {
-  font-size: 2rem;
-  margin-top: 40px;
+  font-size: 1.7rem;
+  margin-top: 44px;
   border: none;
   cursor: pointer;
   background-color: rgb(231, 230, 230);
   padding: 10px 40px;
-  border-radius: 30px;
+  border-radius: 200px;
+  font-weight: bold;
+  transition: box-shadow 0.15s;
 }
 
+.play-again-btn:hover {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}

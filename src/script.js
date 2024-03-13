@@ -27,13 +27,27 @@ function Gameboard() {
     return 1;
   }
 
-  return { getBoard, addMove, getBoardWithValues }
+  const resetBoard = function() {
+    board.forEach((row) => {
+      row.forEach((cell) => {
+        cell.changeValue(null);
+      });
+    });
+  }
+
+  return { getBoard, addMove, getBoardWithValues, resetBoard }
 }
 
 
 function Game() {
   const board = Gameboard()
   let result = null;
+
+  const resetGame = function() {
+    result = null;
+    board.resetBoard(); 
+    changeTurn();
+  }
 
   const getResult = () => result;
 
@@ -119,6 +133,7 @@ function Game() {
     getBoard: board.getBoard, 
     getActivePlayer,
     getResult,
+    resetGame,
   }
 }
 
@@ -126,9 +141,10 @@ function Game() {
 function ScreenController() {
   const game = Game();
 
-  // Get turn and board from DOM
-  const board = document.querySelector('.board');
-  const turn = document.querySelector('.turn');
+  let board = null;
+  let turn = null;
+
+  const container = document.querySelector('.ui-container');
 
   const cellClickHandler = function(event) {
     const cell = event.target;
@@ -145,6 +161,7 @@ function ScreenController() {
   }
 
   const resetEventListeners = function() {
+    // Remove board cell's event listeners
     const cells = document.querySelectorAll('.cell');
     cells.forEach(cell => {
       cell.removeEventListener('click', cellClickHandler);
@@ -180,31 +197,77 @@ function ScreenController() {
       cell.addEventListener('click', cellClickHandler);
     });
   }
-  
 
   const renderGameOverScreen = function(result) {
-    const gameScreen = document.querySelector('.container');
+    // Make game screen faded
+    const gameScreen = document.querySelector('.ui-container');
+    gameScreen.classList.add('faded');
+
     const gameOverScreen = document.querySelector('.game-over-modal');
-    gameScreen.classList.add('translucent');
     gameOverScreen.classList.remove('hidden');
 
-    const gameOverText = document.querySelector('.game-over');
+    // Clear game over screen
+    gameOverScreen.textContent = '';
+
+    // Create game over screen content
+    const gameOverText = document.createElement('div');
+    gameOverText.classList.add('game-over');
     gameOverText.textContent = result;
 
-    const playAgainBtn = document.querySelector('.play-again-btn');
+    const playAgainBtn = document.createElement('button');
+    playAgainBtn.textContent = 'Play Again';
+    playAgainBtn.classList.add('play-again-btn');
 
-    playAgainBtn.addEventListener('click', () => {
+    // Append game over screen content
+    gameOverScreen.appendChild(gameOverText);
+    gameOverScreen.appendChild(playAgainBtn);
+
+    const handlePlayAgain = function() {
       gameOverScreen.classList.add('hidden');
-      gameScreen.classList.remove('translucent');
-
-      // Initialize new game
-      ScreenController();
-    });
-    
-  }
+      gameScreen.classList.remove('faded');
   
-  // Initial render
-  renderBoard();
+      // Initialize new game
+      game.resetGame()
+      renderBoard();
+    }
+
+    playAgainBtn.addEventListener('click', handlePlayAgain);  
+  }
+
+  const getPlayerNames = function() {
+    const player1 = document.querySelector('#player1').value;
+    const player2 = document.querySelector('#player2').value;
+
+    players[0].name = player1;
+    players[1].name = player2;
+  }
+
+  const renderGameScreen = function() {
+    container.textContent = '';
+
+    board = document.createElement('div');
+    turn = document.createElement('div');
+
+    board.classList.add('gameBoard');
+    turn.classList.add('playTurn');
+
+    container.appendChild(board);
+    container.appendChild(turn);
+  }
+
+  const startGame = function() {
+    renderGameScreen();
+    renderBoard();
+  } 
+
+  // Start button
+  const startBtn = document.querySelector('.start-game');
+  startBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    getPlayerNames();
+    startGame();
+  });
+
 }
 
 ScreenController();
